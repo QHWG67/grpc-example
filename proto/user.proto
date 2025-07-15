@@ -1,0 +1,22 @@
+// Define the syntax version for the Protocol Buffers file
+syntax = "proto3";
+
+// Specify the package name for the generated code
+package example;
+
+// Define the UserService with a single RPC method GetUser
+service UserService {
+  // GetUser takes a UserRequest and returns a UserResponse
+  rpc GetUser (UserRequest) returns (UserResponse);
+}
+
+// Define the UserRequest message with a single field for user ID
+message UserRequest {
+  uint32 id = 1; // The ID of the user being requested
+}
+
+// Define the UserResponse message with fields for name and email
+message UserResponse {
+  string name = 1; // The name of the user
+  string email = 2; // The email of the user
+}
