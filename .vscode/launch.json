@@ -1,4 +1,4 @@
-// filepath: /home/heqing/workdir/grpc/.vscode/launch.json
+// filepath: /home/qhwg67/workdir/grpc/.vscode/launch.json
 {
     "version": "0.2.0",
     "configurations": [
@@ -6,10 +6,10 @@
             "name": "Debug gRPC Server",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/home/heqing/workdir/grpc/build/server", // 可执行文件路径
+            "program": "/home/qhwg67/workdir/grpc/build/server", // 可执行文件路径
             "args": [],
             "stopAtEntry": false,
-            "cwd": "/home/heqing/workdir/grpc",
+            "cwd": "/home/qhwg67/workdir/grpc",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
