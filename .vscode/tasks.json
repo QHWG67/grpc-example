@@ -1,0 +1,35 @@
+// filepath: /home/heqing/workdir/grpc/.vscode/tasks.json
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Configure and Build gRPC Project",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "-S", "/home/heqing/workdir/grpc",
+                "-B", "/home/heqing/workdir/grpc/build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "Run cmake configure and build."
+        },
+        {
+            "type": "shell",
+            "label": "Build gRPC Project",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "--build", "/home/heqing/workdir/grpc/build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Build the gRPC project."
+        }
+    ],
+    "version": "2.0.0"
+}
