@@ -83,13 +83,17 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_user_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\nuser.proto\022\007example\"\031\n\013UserRequest\022\n\n\002"
   "id\030\001 \001(\r\"+\n\014UserResponse\022\014\n\004name\030\001 \001(\t\022\r"
-  "\n\005email\030\002 \001(\t2E\n\013UserService\0226\n\007GetUser\022"
-  "\024.example.UserRequest\032\025.example.UserResp"
-  "onseb\006proto3"
+  "\n\005email\030\002 \001(\t2\377\001\n\013UserService\0226\n\007GetUser"
+  "\022\024.example.UserRequest\032\025.example.UserRes"
+  "ponse\022<\n\013StreamUsers\022\024.example.UserReque"
+  "st\032\025.example.UserResponse0\001\022<\n\013UploadUse"
+  "rs\022\024.example.UserRequest\032\025.example.UserR"
+  "esponse(\001\022<\n\tChatUsers\022\024.example.UserReq"
+  "uest\032\025.example.UserResponse(\0010\001b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_user_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_user_2eproto = {
-    false, false, 172, descriptor_table_protodef_user_2eproto,
+    false, false, 359, descriptor_table_protodef_user_2eproto,
     "user.proto",
     &descriptor_table_user_2eproto_once, nullptr, 0, 2,
     schemas, file_default_instances, TableStruct_user_2eproto::offsets,

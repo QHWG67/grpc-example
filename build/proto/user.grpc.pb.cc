@@ -23,6 +23,9 @@ namespace example {
 
 static const char* UserService_method_names[] = {
   "/example.UserService/GetUser",
+  "/example.UserService/StreamUsers",
+  "/example.UserService/UploadUsers",
+  "/example.UserService/ChatUsers",
 };
 
 std::unique_ptr< UserService::Stub> UserService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -33,6 +36,9 @@ std::unique_ptr< UserService::Stub> UserService::NewStub(const std::shared_ptr< 
 
 UserService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
   : channel_(channel), rpcmethod_GetUser_(UserService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_StreamUsers_(UserService_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_UploadUsers_(UserService_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::CLIENT_STREAMING, channel)
+  , rpcmethod_ChatUsers_(UserService_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::BIDI_STREAMING, channel)
   {}
 
 ::grpc::Status UserService::Stub::GetUser(::grpc::ClientContext* context, const ::example::UserRequest& request, ::example::UserResponse* response) {
@@ -58,6 +64,54 @@ void UserService::Stub::async::GetUser(::grpc::ClientContext* context, const ::e
   return result;
 }
 
+::grpc::ClientReader< ::example::UserResponse>* UserService::Stub::StreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request) {
+  return ::grpc::internal::ClientReaderFactory< ::example::UserResponse>::Create(channel_.get(), rpcmethod_StreamUsers_, context, request);
+}
+
+void UserService::Stub::async::StreamUsers(::grpc::ClientContext* context, const ::example::UserRequest* request, ::grpc::ClientReadReactor< ::example::UserResponse>* reactor) {
+  ::grpc::internal::ClientCallbackReaderFactory< ::example::UserResponse>::Create(stub_->channel_.get(), stub_->rpcmethod_StreamUsers_, context, request, reactor);
+}
+
+::grpc::ClientAsyncReader< ::example::UserResponse>* UserService::Stub::AsyncStreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::example::UserResponse>::Create(channel_.get(), cq, rpcmethod_StreamUsers_, context, request, true, tag);
+}
+
+::grpc::ClientAsyncReader< ::example::UserResponse>* UserService::Stub::PrepareAsyncStreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::example::UserResponse>::Create(channel_.get(), cq, rpcmethod_StreamUsers_, context, request, false, nullptr);
+}
+
+::grpc::ClientWriter< ::example::UserRequest>* UserService::Stub::UploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response) {
+  return ::grpc::internal::ClientWriterFactory< ::example::UserRequest>::Create(channel_.get(), rpcmethod_UploadUsers_, context, response);
+}
+
+void UserService::Stub::async::UploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::ClientWriteReactor< ::example::UserRequest>* reactor) {
+  ::grpc::internal::ClientCallbackWriterFactory< ::example::UserRequest>::Create(stub_->channel_.get(), stub_->rpcmethod_UploadUsers_, context, response, reactor);
+}
+
+::grpc::ClientAsyncWriter< ::example::UserRequest>* UserService::Stub::AsyncUploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncWriterFactory< ::example::UserRequest>::Create(channel_.get(), cq, rpcmethod_UploadUsers_, context, response, true, tag);
+}
+
+::grpc::ClientAsyncWriter< ::example::UserRequest>* UserService::Stub::PrepareAsyncUploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncWriterFactory< ::example::UserRequest>::Create(channel_.get(), cq, rpcmethod_UploadUsers_, context, response, false, nullptr);
+}
+
+::grpc::ClientReaderWriter< ::example::UserRequest, ::example::UserResponse>* UserService::Stub::ChatUsersRaw(::grpc::ClientContext* context) {
+  return ::grpc::internal::ClientReaderWriterFactory< ::example::UserRequest, ::example::UserResponse>::Create(channel_.get(), rpcmethod_ChatUsers_, context);
+}
+
+void UserService::Stub::async::ChatUsers(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::example::UserRequest,::example::UserResponse>* reactor) {
+  ::grpc::internal::ClientCallbackReaderWriterFactory< ::example::UserRequest,::example::UserResponse>::Create(stub_->channel_.get(), stub_->rpcmethod_ChatUsers_, context, reactor);
+}
+
+::grpc::ClientAsyncReaderWriter< ::example::UserRequest, ::example::UserResponse>* UserService::Stub::AsyncChatUsersRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncReaderWriterFactory< ::example::UserRequest, ::example::UserResponse>::Create(channel_.get(), cq, rpcmethod_ChatUsers_, context, true, tag);
+}
+
+::grpc::ClientAsyncReaderWriter< ::example::UserRequest, ::example::UserResponse>* UserService::Stub::PrepareAsyncChatUsersRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncReaderWriterFactory< ::example::UserRequest, ::example::UserResponse>::Create(channel_.get(), cq, rpcmethod_ChatUsers_, context, false, nullptr);
+}
+
 UserService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       UserService_method_names[0],
@@ -69,6 +123,36 @@ UserService::Service::Service() {
              ::example::UserResponse* resp) {
                return service->GetUser(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      UserService_method_names[1],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< UserService::Service, ::example::UserRequest, ::example::UserResponse>(
+          [](UserService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::example::UserRequest* req,
+             ::grpc::ServerWriter<::example::UserResponse>* writer) {
+               return service->StreamUsers(ctx, req, writer);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      UserService_method_names[2],
+      ::grpc::internal::RpcMethod::CLIENT_STREAMING,
+      new ::grpc::internal::ClientStreamingHandler< UserService::Service, ::example::UserRequest, ::example::UserResponse>(
+          [](UserService::Service* service,
+             ::grpc::ServerContext* ctx,
+             ::grpc::ServerReader<::example::UserRequest>* reader,
+             ::example::UserResponse* resp) {
+               return service->UploadUsers(ctx, reader, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      UserService_method_names[3],
+      ::grpc::internal::RpcMethod::BIDI_STREAMING,
+      new ::grpc::internal::BidiStreamingHandler< UserService::Service, ::example::UserRequest, ::example::UserResponse>(
+          [](UserService::Service* service,
+             ::grpc::ServerContext* ctx,
+             ::grpc::ServerReaderWriter<::example::UserResponse,
+             ::example::UserRequest>* stream) {
+               return service->ChatUsers(ctx, stream);
+             }, this)));
 }
 
 UserService::Service::~Service() {
@@ -78,6 +162,26 @@ UserService::Service::~Service() {
   (void) context;
   (void) request;
   (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status UserService::Service::StreamUsers(::grpc::ServerContext* context, const ::example::UserRequest* request, ::grpc::ServerWriter< ::example::UserResponse>* writer) {
+  (void) context;
+  (void) request;
+  (void) writer;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status UserService::Service::UploadUsers(::grpc::ServerContext* context, ::grpc::ServerReader< ::example::UserRequest>* reader, ::example::UserResponse* response) {
+  (void) context;
+  (void) reader;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status UserService::Service::ChatUsers(::grpc::ServerContext* context, ::grpc::ServerReaderWriter< ::example::UserResponse, ::example::UserRequest>* stream) {
+  (void) context;
+  (void) stream;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 

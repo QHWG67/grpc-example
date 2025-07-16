@@ -29,7 +29,7 @@
 
 namespace example {
 
-// Define the UserService with a single RPC method GetUser
+// Define the UserService with a single RPC method GetUser, a server-streaming RPC method StreamUsers, a client-streaming RPC method UploadUsers, and a bidirectional streaming RPC method ChatUsers
 class UserService final {
  public:
   static constexpr char const* service_full_name() {
@@ -46,12 +46,48 @@ class UserService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::example::UserResponse>> PrepareAsyncGetUser(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::example::UserResponse>>(PrepareAsyncGetUserRaw(context, request, cq));
     }
+    // StreamUsers takes a UserRequest and returns a stream of UserResponse
+    std::unique_ptr< ::grpc::ClientReaderInterface< ::example::UserResponse>> StreamUsers(::grpc::ClientContext* context, const ::example::UserRequest& request) {
+      return std::unique_ptr< ::grpc::ClientReaderInterface< ::example::UserResponse>>(StreamUsersRaw(context, request));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::example::UserResponse>> AsyncStreamUsers(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::example::UserResponse>>(AsyncStreamUsersRaw(context, request, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::example::UserResponse>> PrepareAsyncStreamUsers(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::example::UserResponse>>(PrepareAsyncStreamUsersRaw(context, request, cq));
+    }
+    // UploadUsers takes a stream of UserRequest and returns a UserResponse
+    std::unique_ptr< ::grpc::ClientWriterInterface< ::example::UserRequest>> UploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response) {
+      return std::unique_ptr< ::grpc::ClientWriterInterface< ::example::UserRequest>>(UploadUsersRaw(context, response));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::example::UserRequest>> AsyncUploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::example::UserRequest>>(AsyncUploadUsersRaw(context, response, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::example::UserRequest>> PrepareAsyncUploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncWriterInterface< ::example::UserRequest>>(PrepareAsyncUploadUsersRaw(context, response, cq));
+    }
+    // ChatUsers takes a stream of UserRequest and returns a stream of UserResponse
+    std::unique_ptr< ::grpc::ClientReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>> ChatUsers(::grpc::ClientContext* context) {
+      return std::unique_ptr< ::grpc::ClientReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>>(ChatUsersRaw(context));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>> AsyncChatUsers(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>>(AsyncChatUsersRaw(context, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>> PrepareAsyncChatUsers(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>>(PrepareAsyncChatUsersRaw(context, cq));
+    }
     class async_interface {
      public:
       virtual ~async_interface() {}
       // GetUser takes a UserRequest and returns a UserResponse
       virtual void GetUser(::grpc::ClientContext* context, const ::example::UserRequest* request, ::example::UserResponse* response, std::function<void(::grpc::Status)>) = 0;
       virtual void GetUser(::grpc::ClientContext* context, const ::example::UserRequest* request, ::example::UserResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      // StreamUsers takes a UserRequest and returns a stream of UserResponse
+      virtual void StreamUsers(::grpc::ClientContext* context, const ::example::UserRequest* request, ::grpc::ClientReadReactor< ::example::UserResponse>* reactor) = 0;
+      // UploadUsers takes a stream of UserRequest and returns a UserResponse
+      virtual void UploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::ClientWriteReactor< ::example::UserRequest>* reactor) = 0;
+      // ChatUsers takes a stream of UserRequest and returns a stream of UserResponse
+      virtual void ChatUsers(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::example::UserRequest,::example::UserResponse>* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -59,6 +95,15 @@ class UserService final {
    private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::example::UserResponse>* AsyncGetUserRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::example::UserResponse>* PrepareAsyncGetUserRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientReaderInterface< ::example::UserResponse>* StreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::example::UserResponse>* AsyncStreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::example::UserResponse>* PrepareAsyncStreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientWriterInterface< ::example::UserRequest>* UploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response) = 0;
+    virtual ::grpc::ClientAsyncWriterInterface< ::example::UserRequest>* AsyncUploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncWriterInterface< ::example::UserRequest>* PrepareAsyncUploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>* ChatUsersRaw(::grpc::ClientContext* context) = 0;
+    virtual ::grpc::ClientAsyncReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>* AsyncChatUsersRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncReaderWriterInterface< ::example::UserRequest, ::example::UserResponse>* PrepareAsyncChatUsersRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -70,11 +115,41 @@ class UserService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::example::UserResponse>> PrepareAsyncGetUser(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::example::UserResponse>>(PrepareAsyncGetUserRaw(context, request, cq));
     }
+    std::unique_ptr< ::grpc::ClientReader< ::example::UserResponse>> StreamUsers(::grpc::ClientContext* context, const ::example::UserRequest& request) {
+      return std::unique_ptr< ::grpc::ClientReader< ::example::UserResponse>>(StreamUsersRaw(context, request));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::example::UserResponse>> AsyncStreamUsers(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::example::UserResponse>>(AsyncStreamUsersRaw(context, request, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::example::UserResponse>> PrepareAsyncStreamUsers(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::example::UserResponse>>(PrepareAsyncStreamUsersRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientWriter< ::example::UserRequest>> UploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response) {
+      return std::unique_ptr< ::grpc::ClientWriter< ::example::UserRequest>>(UploadUsersRaw(context, response));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncWriter< ::example::UserRequest>> AsyncUploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncWriter< ::example::UserRequest>>(AsyncUploadUsersRaw(context, response, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncWriter< ::example::UserRequest>> PrepareAsyncUploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncWriter< ::example::UserRequest>>(PrepareAsyncUploadUsersRaw(context, response, cq));
+    }
+    std::unique_ptr< ::grpc::ClientReaderWriter< ::example::UserRequest, ::example::UserResponse>> ChatUsers(::grpc::ClientContext* context) {
+      return std::unique_ptr< ::grpc::ClientReaderWriter< ::example::UserRequest, ::example::UserResponse>>(ChatUsersRaw(context));
+    }
+    std::unique_ptr<  ::grpc::ClientAsyncReaderWriter< ::example::UserRequest, ::example::UserResponse>> AsyncChatUsers(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderWriter< ::example::UserRequest, ::example::UserResponse>>(AsyncChatUsersRaw(context, cq, tag));
+    }
+    std::unique_ptr<  ::grpc::ClientAsyncReaderWriter< ::example::UserRequest, ::example::UserResponse>> PrepareAsyncChatUsers(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderWriter< ::example::UserRequest, ::example::UserResponse>>(PrepareAsyncChatUsersRaw(context, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
       void GetUser(::grpc::ClientContext* context, const ::example::UserRequest* request, ::example::UserResponse* response, std::function<void(::grpc::Status)>) override;
       void GetUser(::grpc::ClientContext* context, const ::example::UserRequest* request, ::example::UserResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void StreamUsers(::grpc::ClientContext* context, const ::example::UserRequest* request, ::grpc::ClientReadReactor< ::example::UserResponse>* reactor) override;
+      void UploadUsers(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::ClientWriteReactor< ::example::UserRequest>* reactor) override;
+      void ChatUsers(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::example::UserRequest,::example::UserResponse>* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -88,7 +163,19 @@ class UserService final {
     class async async_stub_{this};
     ::grpc::ClientAsyncResponseReader< ::example::UserResponse>* AsyncGetUserRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::example::UserResponse>* PrepareAsyncGetUserRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientReader< ::example::UserResponse>* StreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request) override;
+    ::grpc::ClientAsyncReader< ::example::UserResponse>* AsyncStreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncReader< ::example::UserResponse>* PrepareAsyncStreamUsersRaw(::grpc::ClientContext* context, const ::example::UserRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientWriter< ::example::UserRequest>* UploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response) override;
+    ::grpc::ClientAsyncWriter< ::example::UserRequest>* AsyncUploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncWriter< ::example::UserRequest>* PrepareAsyncUploadUsersRaw(::grpc::ClientContext* context, ::example::UserResponse* response, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientReaderWriter< ::example::UserRequest, ::example::UserResponse>* ChatUsersRaw(::grpc::ClientContext* context) override;
+    ::grpc::ClientAsyncReaderWriter< ::example::UserRequest, ::example::UserResponse>* AsyncChatUsersRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncReaderWriter< ::example::UserRequest, ::example::UserResponse>* PrepareAsyncChatUsersRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_GetUser_;
+    const ::grpc::internal::RpcMethod rpcmethod_StreamUsers_;
+    const ::grpc::internal::RpcMethod rpcmethod_UploadUsers_;
+    const ::grpc::internal::RpcMethod rpcmethod_ChatUsers_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -98,6 +185,12 @@ class UserService final {
     virtual ~Service();
     // GetUser takes a UserRequest and returns a UserResponse
     virtual ::grpc::Status GetUser(::grpc::ServerContext* context, const ::example::UserRequest* request, ::example::UserResponse* response);
+    // StreamUsers takes a UserRequest and returns a stream of UserResponse
+    virtual ::grpc::Status StreamUsers(::grpc::ServerContext* context, const ::example::UserRequest* request, ::grpc::ServerWriter< ::example::UserResponse>* writer);
+    // UploadUsers takes a stream of UserRequest and returns a UserResponse
+    virtual ::grpc::Status UploadUsers(::grpc::ServerContext* context, ::grpc::ServerReader< ::example::UserRequest>* reader, ::example::UserResponse* response);
+    // ChatUsers takes a stream of UserRequest and returns a stream of UserResponse
+    virtual ::grpc::Status ChatUsers(::grpc::ServerContext* context, ::grpc::ServerReaderWriter< ::example::UserResponse, ::example::UserRequest>* stream);
   };
   template <class BaseClass>
   class WithAsyncMethod_GetUser : public BaseClass {
@@ -119,7 +212,67 @@ class UserService final {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_GetUser<Service > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_StreamUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_StreamUsers() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_StreamUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamUsers(::grpc::ServerContext* /*context*/, const ::example::UserRequest* /*request*/, ::grpc::ServerWriter< ::example::UserResponse>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestStreamUsers(::grpc::ServerContext* context, ::example::UserRequest* request, ::grpc::ServerAsyncWriter< ::example::UserResponse>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncServerStreaming(1, context, request, writer, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_UploadUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_UploadUsers() {
+      ::grpc::Service::MarkMethodAsync(2);
+    }
+    ~WithAsyncMethod_UploadUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status UploadUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::example::UserRequest>* /*reader*/, ::example::UserResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestUploadUsers(::grpc::ServerContext* context, ::grpc::ServerAsyncReader< ::example::UserResponse, ::example::UserRequest>* reader, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncClientStreaming(2, context, reader, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ChatUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ChatUsers() {
+      ::grpc::Service::MarkMethodAsync(3);
+    }
+    ~WithAsyncMethod_ChatUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ChatUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::example::UserResponse, ::example::UserRequest>* /*stream*/)  override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestChatUsers(::grpc::ServerContext* context, ::grpc::ServerAsyncReaderWriter< ::example::UserResponse, ::example::UserRequest>* stream, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncBidiStreaming(3, context, stream, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_GetUser<WithAsyncMethod_StreamUsers<WithAsyncMethod_UploadUsers<WithAsyncMethod_ChatUsers<Service > > > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_GetUser : public BaseClass {
    private:
@@ -147,7 +300,74 @@ class UserService final {
     virtual ::grpc::ServerUnaryReactor* GetUser(
       ::grpc::CallbackServerContext* /*context*/, const ::example::UserRequest* /*request*/, ::example::UserResponse* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_GetUser<Service > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_StreamUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_StreamUsers() {
+      ::grpc::Service::MarkMethodCallback(1,
+          new ::grpc::internal::CallbackServerStreamingHandler< ::example::UserRequest, ::example::UserResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::example::UserRequest* request) { return this->StreamUsers(context, request); }));
+    }
+    ~WithCallbackMethod_StreamUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamUsers(::grpc::ServerContext* /*context*/, const ::example::UserRequest* /*request*/, ::grpc::ServerWriter< ::example::UserResponse>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerWriteReactor< ::example::UserResponse>* StreamUsers(
+      ::grpc::CallbackServerContext* /*context*/, const ::example::UserRequest* /*request*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_UploadUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_UploadUsers() {
+      ::grpc::Service::MarkMethodCallback(2,
+          new ::grpc::internal::CallbackClientStreamingHandler< ::example::UserRequest, ::example::UserResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, ::example::UserResponse* response) { return this->UploadUsers(context, response); }));
+    }
+    ~WithCallbackMethod_UploadUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status UploadUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::example::UserRequest>* /*reader*/, ::example::UserResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerReadReactor< ::example::UserRequest>* UploadUsers(
+      ::grpc::CallbackServerContext* /*context*/, ::example::UserResponse* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_ChatUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_ChatUsers() {
+      ::grpc::Service::MarkMethodCallback(3,
+          new ::grpc::internal::CallbackBidiHandler< ::example::UserRequest, ::example::UserResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context) { return this->ChatUsers(context); }));
+    }
+    ~WithCallbackMethod_ChatUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ChatUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::example::UserResponse, ::example::UserRequest>* /*stream*/)  override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerBidiReactor< ::example::UserRequest, ::example::UserResponse>* ChatUsers(
+      ::grpc::CallbackServerContext* /*context*/)
+      { return nullptr; }
+  };
+  typedef WithCallbackMethod_GetUser<WithCallbackMethod_StreamUsers<WithCallbackMethod_UploadUsers<WithCallbackMethod_ChatUsers<Service > > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_GetUser : public BaseClass {
@@ -162,6 +382,57 @@ class UserService final {
     }
     // disable synchronous version of this method
     ::grpc::Status GetUser(::grpc::ServerContext* /*context*/, const ::example::UserRequest* /*request*/, ::example::UserResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_StreamUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_StreamUsers() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_StreamUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamUsers(::grpc::ServerContext* /*context*/, const ::example::UserRequest* /*request*/, ::grpc::ServerWriter< ::example::UserResponse>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_UploadUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_UploadUsers() {
+      ::grpc::Service::MarkMethodGeneric(2);
+    }
+    ~WithGenericMethod_UploadUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status UploadUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::example::UserRequest>* /*reader*/, ::example::UserResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ChatUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ChatUsers() {
+      ::grpc::Service::MarkMethodGeneric(3);
+    }
+    ~WithGenericMethod_ChatUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ChatUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::example::UserResponse, ::example::UserRequest>* /*stream*/)  override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -187,6 +458,66 @@ class UserService final {
     }
   };
   template <class BaseClass>
+  class WithRawMethod_StreamUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_StreamUsers() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_StreamUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamUsers(::grpc::ServerContext* /*context*/, const ::example::UserRequest* /*request*/, ::grpc::ServerWriter< ::example::UserResponse>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestStreamUsers(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncServerStreaming(1, context, request, writer, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_UploadUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_UploadUsers() {
+      ::grpc::Service::MarkMethodRaw(2);
+    }
+    ~WithRawMethod_UploadUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status UploadUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::example::UserRequest>* /*reader*/, ::example::UserResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestUploadUsers(::grpc::ServerContext* context, ::grpc::ServerAsyncReader< ::grpc::ByteBuffer, ::grpc::ByteBuffer>* reader, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncClientStreaming(2, context, reader, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ChatUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ChatUsers() {
+      ::grpc::Service::MarkMethodRaw(3);
+    }
+    ~WithRawMethod_ChatUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ChatUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::example::UserResponse, ::example::UserRequest>* /*stream*/)  override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestChatUsers(::grpc::ServerContext* context, ::grpc::ServerAsyncReaderWriter< ::grpc::ByteBuffer, ::grpc::ByteBuffer>* stream, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncBidiStreaming(3, context, stream, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithRawCallbackMethod_GetUser : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -207,6 +538,73 @@ class UserService final {
     }
     virtual ::grpc::ServerUnaryReactor* GetUser(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_StreamUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_StreamUsers() {
+      ::grpc::Service::MarkMethodRawCallback(1,
+          new ::grpc::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const::grpc::ByteBuffer* request) { return this->StreamUsers(context, request); }));
+    }
+    ~WithRawCallbackMethod_StreamUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamUsers(::grpc::ServerContext* /*context*/, const ::example::UserRequest* /*request*/, ::grpc::ServerWriter< ::example::UserResponse>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerWriteReactor< ::grpc::ByteBuffer>* StreamUsers(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_UploadUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_UploadUsers() {
+      ::grpc::Service::MarkMethodRawCallback(2,
+          new ::grpc::internal::CallbackClientStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, ::grpc::ByteBuffer* response) { return this->UploadUsers(context, response); }));
+    }
+    ~WithRawCallbackMethod_UploadUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status UploadUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReader< ::example::UserRequest>* /*reader*/, ::example::UserResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerReadReactor< ::grpc::ByteBuffer>* UploadUsers(
+      ::grpc::CallbackServerContext* /*context*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_ChatUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_ChatUsers() {
+      ::grpc::Service::MarkMethodRawCallback(3,
+          new ::grpc::internal::CallbackBidiHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context) { return this->ChatUsers(context); }));
+    }
+    ~WithRawCallbackMethod_ChatUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ChatUsers(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::example::UserResponse, ::example::UserRequest>* /*stream*/)  override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerBidiReactor< ::grpc::ByteBuffer, ::grpc::ByteBuffer>* ChatUsers(
+      ::grpc::CallbackServerContext* /*context*/)
+      { return nullptr; }
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_GetUser : public BaseClass {
@@ -236,8 +634,35 @@ class UserService final {
     virtual ::grpc::Status StreamedGetUser(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::example::UserRequest,::example::UserResponse>* server_unary_streamer) = 0;
   };
   typedef WithStreamedUnaryMethod_GetUser<Service > StreamedUnaryService;
-  typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_GetUser<Service > StreamedService;
+  template <class BaseClass>
+  class WithSplitStreamingMethod_StreamUsers : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithSplitStreamingMethod_StreamUsers() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::SplitServerStreamingHandler<
+          ::example::UserRequest, ::example::UserResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerSplitStreamer<
+                     ::example::UserRequest, ::example::UserResponse>* streamer) {
+                       return this->StreamedStreamUsers(context,
+                         streamer);
+                  }));
+    }
+    ~WithSplitStreamingMethod_StreamUsers() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status StreamUsers(::grpc::ServerContext* /*context*/, const ::example::UserRequest* /*request*/, ::grpc::ServerWriter< ::example::UserResponse>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with split streamed
+    virtual ::grpc::Status StreamedStreamUsers(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::example::UserRequest,::example::UserResponse>* server_split_streamer) = 0;
+  };
+  typedef WithSplitStreamingMethod_StreamUsers<Service > SplitStreamedService;
+  typedef WithStreamedUnaryMethod_GetUser<WithSplitStreamingMethod_StreamUsers<Service > > StreamedService;
 };
 
 }  // namespace example
