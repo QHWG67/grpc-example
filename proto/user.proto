@@ -4,10 +4,19 @@ syntax = "proto3";
 // Specify the package name for the generated code
 package example;
 
-// Define the UserService with a single RPC method GetUser
+// Define the UserService with a single RPC method GetUser, a server-streaming RPC method StreamUsers, a client-streaming RPC method UploadUsers, and a bidirectional streaming RPC method ChatUsers
 service UserService {
   // GetUser takes a UserRequest and returns a UserResponse
   rpc GetUser (UserRequest) returns (UserResponse);
+
+  // StreamUsers takes a UserRequest and returns a stream of UserResponse
+  rpc StreamUsers (UserRequest) returns (stream UserResponse);
+
+  // UploadUsers takes a stream of UserRequest and returns a UserResponse
+  rpc UploadUsers (stream UserRequest) returns (UserResponse);
+
+  // ChatUsers takes a stream of UserRequest and returns a stream of UserResponse
+  rpc ChatUsers (stream UserRequest) returns (stream UserResponse);
 }
 
 // Define the UserRequest message with a single field for user ID
